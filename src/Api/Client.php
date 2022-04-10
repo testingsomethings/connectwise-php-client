@@ -55,8 +55,11 @@ class Client
      * Integrator username to make global calls
      *
      * @var string
+     *  !!!!!!!!!! This section is removed !!!!!!!!!!
+     *
+     *protected $integrator;
      */
-    protected $integrator;
+    /* To Here */
 
     /**
      * Current page
@@ -76,9 +79,12 @@ class Client
      * Integration password for global calls
      *
      * @var string
+     *  !!!!!!!!!! This section is removed !!!!!!!!!!
+     *
+     *protected $password;
      */
-    protected $password;
-
+    /* To here */
+     
     /**
      * Resolves a model for the uri
      *
@@ -136,6 +142,10 @@ class Client
      * @var string
      */
     protected $version;
+    /* !!!!!!!! The next three are added in !!!!!!!!!!! */
+    protected $companyID;
+    protected $publicKey;
+    protected $privateKey;
 
     /**
      * Client constructor.
@@ -205,11 +215,19 @@ class Client
      */
     public function buildAuth()
     {
-        if ($this->token->needsRefreshing()) {
-            $this->token->refresh($this);
-        }
-
-        return 'Basic ' . base64_encode($this->token->getUsername() . ':' . $this->token->getPassword());
+        /** !!!!!!!!!!!!! This section is removed !!!!!!!!!!!!
+        *if ($this->token->needsRefreshing()) {
+        *    $this->token->refresh($this);
+        *}
+        *
+        *return 'Basic ' . base64_encode($this->token->getUsername() . ':' . $this->token->getPassword());
+        */
+        /* To Here */
+        /** !!!!!!!!! This is added !!!!!!!!!!! */
+        $authString = $this->companyId . '+' . $this->publicKey . ':' . $this->privateKey;
+        $auth = 'Basic ' . base64_encode($authString);
+        return $auth;
+        /* To Here */
     }
 
     /**
@@ -281,6 +299,7 @@ class Client
     /**
      * The headers to send
      *
+     * !!!!!!!!!!! No we do NOT use that header !!!!!!!!!!!!
      * When making an integrator call (expired token), then you only have to send the "x-cw-usertype" header.
      *
      * @return array
@@ -291,15 +310,17 @@ class Client
             'clientId'      => $this->getClientId(),
             'Authorization' => $this->buildAuth(),
         ];
-
-        if ($this->token->isForUser($this->getIntegrator())) {
-            return array_merge(
-                [
-                    'x-cw-usertype' => 'integrator',
-                ],
-                $authorization_headers
-            );
-        }
+        /** !!!!!!!!!!!!!! Removed this section !!!!!!!!!!!
+        *if ($this->token->isForUser($this->getIntegrator())) {
+        *    return array_merge(
+        *        [
+        *            'x-cw-usertype' => 'integrator',
+        *        ],
+        *        $authorization_headers
+        *    );
+        *}
+        */
+        /* To here */
 
         return array_merge(
             [
@@ -315,21 +336,26 @@ class Client
      * Expose the integrator username
      *
      * @return string
+     * !!!!!!!!!!!!! We remove all this !!!!!!!!!!!!
+     *
+     *public function getIntegrator()
+     *{
+     *   return $this->integrator;
+     *}
      */
-    public function getIntegrator()
-    {
-        return $this->integrator;
-    }
 
     /**
      * Expose the integrator password
      *
      * @return string
+     * !!!!!!!!!!!!! We remove all this !!!!!!!!!!!!
+     *
+     *public function getPassword()
+     *{
+     *   return $this->password;
+     *}
      */
-    public function getPassword()
-    {
-        return $this->password;
-    }
+    /* To Here*/
 
     /**
      * Expose the url
@@ -521,29 +547,32 @@ class Client
      * Set the integrator username
      *
      * @param string $integrator
-     *
+     * !!!!!!!!!!!!! We remove all this !!!!!!!!!!!!
      * @return $this
+     *
+     *public function setIntegrator($integrator)
+     *{
+     *   $this->integrator = $integrator;
+     *
+     *   return $this;
+     *}
      */
-    public function setIntegrator($integrator)
-    {
-        $this->integrator = $integrator;
-
-        return $this;
-    }
 
     /**
      * Set the integrator password
      *
      * @param string $password
-     *
+     * !!!!!!!!!!!!! We remove all this !!!!!!!!!!!!
      * @return $this
+     *
+     *public function setPassword($password)
+     *{
+     *   $this->password = $password;
+     *
+     *   return $this;
+     *}
      */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
+    /* To Here */
 
     /**
      * Set the page size, not allowing < 0
@@ -606,4 +635,26 @@ class Client
     {
         return ltrim(Str::replaceFirst($this->getUrl(), '', $resource), '/');
     }
+    /** !!!!!!!!!!!! We add all of this !!!!!!!!!!!!!!*/
+        public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+
+        return $this;
+    }
+
+    public function setPublicKey($publicKey)
+    {
+        $this->publicKey = $publicKey;
+
+        return $this;
+    }
+
+    public function setPrivateKey($privateKey)
+    {
+        $this->privateKey = $privateKey;
+
+        return $this;
+    }
+    /*To here*/
 }
