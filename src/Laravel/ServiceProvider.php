@@ -83,9 +83,16 @@ class ServiceProvider extends LaravelServiceProvider
                     $app->make(Token::class),
                     $app->make(Guzzle::class),
                     $app->make(ModelResolver::class)
-                ))->setClientId($app->config->get('services.connectwise.client_id'))
-                  ->setIntegrator($app->config->get('services.connectwise.integrator'))
-                  ->setPassword($app->config->get('services.connectwise.password'))
+                    /* !!!!!!!!!!!!! We remove this !!!!!!!!!!!*/
+                /*))->setClientId($app->config->get('services.connectwise.client_id'))
+                 * ->setIntegrator($app->config->get('services.connectwise.integrator'))
+                 * ->setPassword($app->config->get('services.connectwise.password'))*/
+                    /* !!!!!!!!! And add ClientID, CompanyID, Pubkey, Privkey !!!!!!!!!*/
+                  ))
+                  ->setClientId($app->config->get('services.connectwise.client_id'))
+                  ->setCompanyId($app->config->get('services.connectwise.company_id'))
+                  ->setPublicKey($app->config->get('services.connectwise.public_key'))
+                  ->setPrivateKey($app->config->get('services.connectwise.private_key'))
                   ->setUrl($app->config->get('services.connectwise.url'))
                   ->setVersion($app->config->get('services.connectwise.version', '2019.4'));
             }
